@@ -603,6 +603,10 @@ video {
   }
 }
 
+.fixed {
+  position: fixed;
+}
+
 .absolute {
   position: absolute;
 }
@@ -611,16 +615,24 @@ video {
   position: relative;
 }
 
+.bottom-5 {
+  bottom: 1.25rem;
+}
+
+.right-0 {
+  right: 0px;
+}
+
 .flex {
   display: flex;
 }
 
-.h-\[1476px\] {
-  height: 1476px;
+.h-screen {
+  height: 100vh;
 }
 
-.w-\[1476px\] {
-  width: 1476px;
+.w-screen {
+  width: 100vw;
 }
 
 .items-center {
@@ -633,6 +645,10 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-scroll {
+  overflow: scroll;
 }
 
 .rounded-md {

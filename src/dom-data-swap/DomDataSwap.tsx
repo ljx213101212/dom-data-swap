@@ -1,13 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import useRandomRectangles, { Rectangle } from "./useRandomRectangles";
 
-const DomDataSwap: React.FC = () => {
-  //随机在生成10个矩形数据
-  const [rectangles, setRectangles] = useRandomRectangles(10) as [
-    Rectangle[],
-    (rects: Rectangle[]) => void
-  ];
+interface DomDataSwapProps {
+  rectangleNumber: number;
+  containerSize: number;
+}
 
+const DomDataSwap: React.FC<DomDataSwapProps> = (props: DomDataSwapProps) => {
+  //随机在生成10个矩形数据
+  const [rectangles, setRectangles] = useRandomRectangles(
+    props.rectangleNumber,
+    props.containerSize
+  ) as [Rectangle[], (rects: Rectangle[]) => void];
+
+  const scrollRef = useRef<HTMLDivElement>(null);
   // 拖拽范围容器
   const containerRef = useRef<HTMLDivElement>(null);
   // 起始拖拽的DOM id （并非拖拽中的dummy DOM)
@@ -21,6 +27,10 @@ const DomDataSwap: React.FC = () => {
 
   //测试数据
   const [dummyPosition, setDummyPosition] = useState<{
+    left: number;
+    top: number;
+  }>({ left: 0, top: 0 });
+  const [scrollPositon, setScrollPositon] = useState<{
     left: number;
     top: number;
   }>({ left: 0, top: 0 });
@@ -42,12 +52,10 @@ const DomDataSwap: React.FC = () => {
 
   const haveIntersection = (r1: DOMRect, r2: DOMRect) => {
     return !(
-      (
-        r2.x > r1.x + r1.width || //r2的左边界 在 r1的右边界 右侧
-        r2.x + r2.width < r1.x || //r2的右边界 在 r1的左边界 左侧
-        r2.y > r1.y + r1.height || //r2的上边界 在 r1的下边界 下方
-        r2.y + r2.height < r1.y
-      ) //r2的下边界 在 r1的上边界 上方
+      r2.x > r1.x + r1.width || //r2的左边界 在 r1的右边界 右侧
+      r2.x + r2.width < r1.x || //r2的右边界 在 r1的左边界 左侧
+      r2.y > r1.y + r1.height || //r2的上边界 在 r1的下边界 下方
+      r2.y + r2.height < r1.y //r2的下边界 在 r1的上边界 上方
     );
   };
 
@@ -73,7 +81,7 @@ const DomDataSwap: React.FC = () => {
   };
 
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !scrollRef.current) return;
 
     // 重新点击并重置样式
     resetEffect();
@@ -83,9 +91,10 @@ const DomDataSwap: React.FC = () => {
     const containerRect = containerRef.current.getBoundingClientRect();
 
     // 保存鼠标点击点到元素左上角的偏移量
+    // 注意: event.clientX 只是到viewport, 需要加入scroll的偏移量,才能得到正确相对于页面最左上角的位置.
     offset.current = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
+      x: event.clientX - rect.left + scrollRef.current.scrollLeft,
+      y: event.clientY - rect.top + scrollRef.current.scrollTop,
     };
 
     // 创建一个dummy DOM 来模拟拖拽的效果
@@ -93,6 +102,7 @@ const DomDataSwap: React.FC = () => {
 
     clone.id = `${original.id}-clone`;
     clone.style.position = "absolute"; //相对于最近 包含块（container）
+
     clone.style.left = `${rect.left - containerRect.left}px`;
     clone.style.top = `${rect.top - containerRect.top}px`;
     clone.style.cursor = "grabbing";
@@ -112,14 +122,23 @@ const DomDataSwap: React.FC = () => {
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     // 不满足条件，不做处理
-    if (draggingId === null || !dummyEl || !containerRef.current) return;
+    if (
+      draggingId === null ||
+      !dummyEl ||
+      !containerRef.current ||
+      !scrollRef.current
+    )
+      return;
 
     const container = containerRef.current;
+    const scroll = scrollRef.current;
     const containerRect = container.getBoundingClientRect();
 
     // 计算新的位置 (DOM 左上角) -> 相对于container
-    let newX = event.clientX - containerRect.left - offset.current.x;
-    let newY = event.clientY - containerRect.top - offset.current.y;
+    let newX =
+      event.clientX - containerRect.left - offset.current.x + scroll.scrollLeft;
+    let newY =
+      event.clientY - containerRect.top - offset.current.y + scroll.scrollTop;
 
     const dummyRect = new DOMRect(
       newX,
@@ -140,8 +159,15 @@ const DomDataSwap: React.FC = () => {
         continue;
       }
 
+      const itemRect = new DOMRect(
+        item.getBoundingClientRect().x + scroll.scrollLeft,
+        item.getBoundingClientRect().y + scroll.scrollTop,
+        item.offsetWidth,
+        item.offsetHeight
+      );
+
       //当前子元素 与 dummy DOM 是否碰撞
-      if (haveIntersection(item.getBoundingClientRect(), dummyRect)) {
+      if (haveIntersection(itemRect, dummyRect)) {
         addIntersectionEffect(item);
         setTargetId(item.id); //记录碰撞的子元素id
         isOverlapping = true;
@@ -158,26 +184,30 @@ const DomDataSwap: React.FC = () => {
     // 检查 dummy 是否接触到 container 的边界
     const borderRect = container.getBoundingClientRect();
     const isTouchingRight =
-      dummyRect.x + dummyRect.width >= borderRect.x + borderRect.width;
-    const isTouchingLeft = dummyRect.x <= borderRect.x;
-    const isTouchingTop = dummyRect.y <= borderRect.y;
+      dummyRect.x - scroll.scrollLeft + dummyRect.width >=
+      borderRect.x + borderRect.width;
+    const isTouchingLeft = dummyRect.x - scroll.scrollLeft <= borderRect.x;
+    const isTouchingTop = dummyRect.y - scroll.scrollTop <= borderRect.y;
     const isTouchingBottom =
-      dummyRect.y + dummyRect.height >= borderRect.y + borderRect.height;
+      dummyRect.y - scroll.scrollTop + dummyRect.height >=
+      borderRect.y + borderRect.height;
 
     if (isTouchingRight) {
-      newX = borderRect.x + borderRect.width - dummyRect.width; // 紧贴右边界
+      newX =
+        borderRect.x + borderRect.width - dummyRect.width + scroll.scrollLeft; // 紧贴右边界
     }
 
     if (isTouchingLeft) {
-      newX = borderRect.x; // 紧贴左边界
+      newX = borderRect.x + scroll.scrollLeft; // 紧贴左边界
     }
 
     if (isTouchingTop) {
-      newY = borderRect.y; // 紧贴上边界
+      newY = borderRect.y + scroll.scrollTop; // 紧贴上边界
     }
 
     if (isTouchingBottom) {
-      newY = borderRect.y + borderRect.height - dummyRect.height; // 紧贴下边界
+      newY =
+        borderRect.y + borderRect.height - dummyRect.height + scroll.scrollTop; // 紧贴下边界
     }
 
     // 移动dummy DOM
@@ -197,6 +227,7 @@ const DomDataSwap: React.FC = () => {
 
     // [测试数据]
     setDummyPosition({ left: newX, top: newY });
+    setScrollPositon({ left: scroll.scrollLeft, top: scroll.scrollTop });
   };
 
   // 松开鼠标 -> 取消或命中
@@ -232,10 +263,14 @@ const DomDataSwap: React.FC = () => {
   };
 
   return (
-    <>
+    <div ref={scrollRef} className="overflow-scroll h-screen w-screen">
       <div
         ref={containerRef}
-        className="w-[1476px] h-[1476px] relative border border-black overflow-hidden"
+        className={`relative border border-black overflow-hidden`}
+        style={{
+          width: `${props.containerSize}px`,
+          height: `${props.containerSize}px`,
+        }}
       >
         {rectangles.map((rect) => (
           <div
@@ -261,13 +296,17 @@ const DomDataSwap: React.FC = () => {
         ))}
       </div>
 
-      <div>[测试数据]</div>
-      <div>{"draggingId: " + draggingId}</div>
-      <div>{"targetId: " + targetId}</div>
-      <div>{"dummyEl Id: " + dummyEl?.id}</div>
-      <div>{"dummyEl left: " + dummyPosition.left + "px"}</div>
-      <div>{"dummyEl top: " + dummyPosition.top + "px"}</div>
-    </>
+      <div className="fixed bottom-5 right-0">
+        <div>[测试数据]</div>
+        <div>{"draggingId: " + draggingId}</div>
+        <div>{"targetId: " + targetId}</div>
+        <div>{"dummyEl Id: " + dummyEl?.id}</div>
+        <div>{"dummyEl left: " + dummyPosition.left + "px"}</div>
+        <div>{"dummyEl top: " + dummyPosition.top + "px"}</div>
+        <div>{"scroll left: " + scrollPositon.left + "px"}</div>
+        <div>{"scroll top: " + scrollPositon.top + "px"}</div>
+      </div>
+    </div>
   );
 };
 

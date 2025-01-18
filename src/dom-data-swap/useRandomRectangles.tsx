@@ -10,13 +10,15 @@ export interface Rectangle {
   apiData?: string; //需要替换的数据
 }
 
-const useRandomRectangles = (num: number = 10) => {
+const useRandomRectangles = (
+  num: number = 10,
+  containerSize: number = 1476
+) => {
   // 随机生成 min - max 之间的整数
   const getRandomInt = (min: number, max: number): number =>
     Math.floor(Math.random() * (max - min + 1)) + min;
 
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
-  const containerSize = 1476;
 
   useEffect(() => {
     generateRandomRectangles();
