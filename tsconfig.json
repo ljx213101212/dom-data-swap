@@ -1,0 +1,12 @@
+{
+    "extends": "./src/.umi/tsconfig.json",
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/.umi/typings.d.ts"],
+    // https://github.com/cypress-io/cypress/issues/26308
+    "ts-node": {
+      "compilerOptions": {
+        "module": "esnext",
+        "moduleResolution": "node"
+      }
+    }
+  }
+  
