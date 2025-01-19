@@ -5,12 +5,12 @@
 
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { css, jsx } from "@emotion/react";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { canMove, isCoord, isPieceType } from "./util";
 import type { HoveredState, SquareProps } from "../typesRuntime";
 
-function Square({ pieces, location, children }: SquareProps) {
+const Square = memo(({ pieces, location, children }: SquareProps) => {
   const ref = useRef(null);
   const [state, setState] = useState<HoveredState>("idle");
 
@@ -20,8 +20,9 @@ function Square({ pieces, location, children }: SquareProps) {
 
     return dropTargetForElements({
       element: el,
+      getData: () => ({ location }),
       onDragEnter: ({ source }) => {
-        console.log("onDragEnter", source);
+        // console.log("onDragEnter", source.data.location, location, pieces);
         // source is the piece being dragged over the drop target
         if (
           // type guards
@@ -36,13 +37,18 @@ function Square({ pieces, location, children }: SquareProps) {
         ) {
           setState("validMove");
         } else {
+          console.log(
+            "onDragEnter - invalidMove",
+            source.data.location,
+            location
+          );
           setState("invalidMove");
         }
       },
       onDragLeave: () => setState("idle"),
       onDrop: () => setState("idle"),
     });
-  }, []);
+  }, [location, pieces]);
 
   const isDark = (location[0] + location[1]) % 2 === 1;
 
@@ -50,6 +56,7 @@ function Square({ pieces, location, children }: SquareProps) {
 
   return (
     <div
+      id={`square-${location[0]}-${location[1]}`}
       key={`${location[0]}-${location[1]}`}
       css={squareStyles}
       style={{ backgroundColor: getColor(state, isDark) }}
@@ -58,7 +65,7 @@ function Square({ pieces, location, children }: SquareProps) {
       {children}
     </div>
   );
-}
+});
 
 export default Square;
 

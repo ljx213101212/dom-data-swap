@@ -2,7 +2,7 @@
  * @jsxRuntime classic
  * @jsx jsx
  */
-import { type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 
 // eslint-disable-next-line @atlaskit/ui-styling-standard/use-compiled -- Ignored via go/DSP-18766
 import { css, jsx } from "@emotion/react";
@@ -13,6 +13,8 @@ import Square from "./chess/square";
 import king from "@/pragmatic-dnd/icons/king.png";
 import pawn from "@/pragmatic-dnd/icons/pawn.png";
 import type { Coord, PieceRecord, PieceType } from "./typesRuntime";
+import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { canMove, isCoord, isPieceType } from "./chess/util";
 
 export function isEqualCoord(c1: Coord, c2: Coord): boolean {
   return c1[0] === c2[0] && c1[1] === c2[1];
@@ -49,10 +51,58 @@ function renderSquares(pieces: PieceRecord[]) {
 }
 
 function Chessboard() {
-  const pieces: PieceRecord[] = [
+  const [pieces, setPieces] = useState<PieceRecord[]>([
     { type: "king", location: [3, 2] },
     { type: "pawn", location: [1, 6] },
-  ];
+  ]);
+  useEffect(() => {
+    return monitorForElements({
+      onDrop({ source, location }) {
+        const destination = location.current.dropTargets[0];
+        if (!destination) {
+          // if dropped outside of any drop targets
+          return;
+        }
+        const destinationLocation = destination.data.location;
+        const sourceLocation = source.data.location;
+        const pieceType = source.data.pieceType;
+
+        // console.log(
+        //   "monitorForElements",
+        //   destination,
+        //   sourceLocation,
+        //   pieceType
+        // );
+
+        if (
+          // type guarding
+          !isCoord(destinationLocation) ||
+          !isCoord(sourceLocation) ||
+          !isPieceType(pieceType)
+        ) {
+          return;
+        }
+
+        const piece = pieces.find((p) =>
+          isEqualCoord(p.location, sourceLocation)
+        );
+        const restOfPieces = pieces.filter((p) => p !== piece);
+
+        if (
+          canMove(sourceLocation, destinationLocation, pieceType, pieces) &&
+          piece !== undefined
+        ) {
+          // moving the piece!
+          setPieces([
+            { type: piece.type, location: destinationLocation },
+            ...restOfPieces,
+          ]);
+        }
+      },
+    });
+  }, [pieces]);
+
+  //   console.log("current pieces", pieces);
 
   return <div css={chessboardStyles}>{renderSquares(pieces)}</div>;
 }

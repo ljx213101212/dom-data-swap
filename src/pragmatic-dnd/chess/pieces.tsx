@@ -3,7 +3,7 @@
  * @jsx jsx
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 
 import { css, jsx } from "@emotion/react";
 import invariant from "tiny-invariant";
@@ -11,25 +11,26 @@ import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 
 import type { PieceProps } from "../typesRuntime";
 
-function Piece({ image, alt, location, pieceType }: PieceProps) {
+const Piece = memo(({ image, alt, location, pieceType }: PieceProps) => {
   const ref = useRef(null);
   const [dragging, setDragging] = useState<boolean>(false);
 
   useEffect(() => {
     const el = ref.current;
     invariant(el);
-
-    //console.log("TEST: ", image, alt, location, pieceType);
     return draggable({
       element: el,
       getInitialData: () => ({ type: "grid-item", location, pieceType }),
       onDragStart: () => setDragging(true), // NEW
       onDrop: () => setDragging(false), // NEW
     });
-  }, []);
+  }, [location, pieceType]);
+
+  // console.log("TEST: ", image, alt, location, pieceType);
 
   return (
     <img
+      id={`${pieceType}-${location[0]}-${location[1]}`}
       css={imageStyles}
       style={dragging ? { opacity: 0.4 } : {}}
       src={image}
@@ -37,7 +38,7 @@ function Piece({ image, alt, location, pieceType }: PieceProps) {
       ref={ref}
     />
   );
-}
+});
 
 export function King(props: PieceProps) {
   return (
