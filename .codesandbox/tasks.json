@@ -6,6 +6,10 @@
       "name": "Pull Latest Changes"
     },
     {
+      "command": "export SHELL=/bin/bash",
+      "name": "Set SHELL Env"
+    },
+    {
       "command": "pnpm install",
       "name": "Install Dependencies"
     },
