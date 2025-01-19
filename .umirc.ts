@@ -7,7 +7,8 @@ export default defineConfig({
   devtool: process.env.NODE_ENV === "development" ? "source-map" : false,
   routes: [
     { path: "/", component: "index" },
-    { path: "/pragmatic", component: "@/pages/pragmatic", layout: false },
+    { path: "/tutorial", component: "@/pages/tutorial", layout: false },
+    { path: "/swap", component: "@/pages/swap", layout: false },
   ],
   tailwindcss: {},
 });
