@@ -19,6 +19,7 @@ const DraggableItemContainer = memo(
   ({ id, rect, children }: PropsWithChildren<DraggableItemContainerProps>) => {
     const ref = useRef(null);
     const [state, setState] = useState<DragState>("idle");
+    const [animationClass, setAnimationClass] = useState<string>("");
 
     useEffect(() => {
       const el = ref.current;
@@ -40,10 +41,31 @@ const DraggableItemContainer = memo(
       });
     }, [rect, children]);
 
+    useEffect(() => {
+      setAnimationClass("");
+      const handleAnimationEnd = () => {
+        setAnimationClass("");
+      };
+      if (rect.shouldShowAnimation) {
+        setAnimationClass("rotate-container-animation");
+        (ref.current as unknown as HTMLElement).addEventListener(
+          "animationend",
+          handleAnimationEnd
+        );
+      }
+      return () => {
+        (ref.current as unknown as HTMLElement).removeEventListener(
+          "animationend",
+          handleAnimationEnd
+        );
+      };
+    }, [rect, children]);
+
+    console.log("DraggableItemContainer - animationClass", animationClass);
     return (
       <div
         id={`container-${id}`}
-        className="absolute z-10" //important
+        className={`absolute z-10 ${animationClass}`} //important
         key={id}
         style={{
           width: `${rect.width}px`,
@@ -63,26 +85,6 @@ const DraggableItemContainer = memo(
 );
 
 export default DraggableItemContainer;
-
-// const getColor = (state: State, isDark: boolean): string => {
-//   if (state.pieceSelected && state.isValidMove && state.isDraggedOver) {
-//     return "lightgreen";
-//   }
-//   if (state.pieceSelected && !state.isValidMove && state.isDraggedOver) {
-//     return "pink";
-//   }
-
-//   return isDark ? "lightgrey" : "white";
-// };
-
-// function getColor(state: HoveredState, isDark: boolean): string {
-//   if (state === "validMove") {
-//     return "lightgreen";
-//   } else if (state === "invalidMove") {
-//     return "pink";
-//   }
-//   return isDark ? "lightgrey" : "white";
-// }
 
 const getStyle = (state: DragState) => {
   if (state === "idle") {

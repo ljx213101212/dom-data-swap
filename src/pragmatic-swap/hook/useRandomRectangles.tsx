@@ -12,6 +12,7 @@ export interface Rectangle {
   left: number;
   top: number;
   apiData?: ApiData; //需要替换的数据
+  shouldShowAnimation?: boolean;
 }
 
 const useRandomRectangles = (

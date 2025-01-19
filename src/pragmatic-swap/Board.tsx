@@ -81,11 +81,13 @@ export default function Board() {
           newRects[sourceIndex] = {
             ...sourceRect,
             apiData: destRect.apiData, // 注意需要复制apiData, 不然memo会认为数据没有变化
+            shouldShowAnimation: false,
           };
 
           newRects[destIndex] = {
             ...destRect,
             apiData: sourceRect.apiData, // 注意需要复制apiData, 不然memo会认为数据没有变化
+            shouldShowAnimation: true,
           };
 
           return newRects;
