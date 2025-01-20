@@ -58,13 +58,13 @@ const DraggableItem = memo(({ id, rect }: ItemProps) => {
     };
     if (rect.shouldShowAnimation) {
       setAnimationClass("rotate-item-animation");
-      (ref.current as unknown as HTMLElement).addEventListener(
+      (ref.current as unknown as HTMLElement)?.addEventListener(
         "animationend",
         handleAnimationEnd
       );
     }
     return () => {
-      (ref.current as unknown as HTMLElement).removeEventListener(
+      (ref.current as unknown as HTMLElement)?.removeEventListener(
         "animationend",
         handleAnimationEnd
       );

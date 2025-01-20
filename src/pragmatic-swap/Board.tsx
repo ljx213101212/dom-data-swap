@@ -65,8 +65,11 @@ export default function Board() {
 
         // 2) Swap in state immutably
         setRectangles((prevRects) => {
-          // Make a shallow copy of the array
-          const newRects = [...prevRects];
+          // Make a shallow copy of the array, reset shouldShowAnimation
+          const newRects = prevRects.map((pr) => ({
+            ...pr,
+            shouldShowAnimation: false,
+          }));
 
           // Find source/destination indexes by ID
           const sourceIndex = newRects.findIndex((r) => r.id === sourceId);
@@ -178,17 +181,6 @@ export default function Board() {
           />
         </Layout.Sider>
       ) : null}
-
-      {/* {containerWidth && containerHeight ? (
-        <ZoomControls
-          className="static"
-          //   zoomIn={transformComponentRef?.current?.zoomIn ?? (() => {})}
-          //   zoomOut={transformComponentRef?.current?.zoomOut ?? (() => {})}
-          //   resetTransform={
-          //     transformComponentRef?.current?.resetTransform ?? (() => {})
-          //   }
-        />
-      ) : null} */}
     </Layout>
   );
 }

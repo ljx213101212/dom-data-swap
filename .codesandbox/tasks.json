@@ -24,7 +24,6 @@
     "start": {
       "name": "Show Demo",
       "command": "pnpm dev",
-      "runAtStart": true,
       "preview": {
         "port": 5173
       }
