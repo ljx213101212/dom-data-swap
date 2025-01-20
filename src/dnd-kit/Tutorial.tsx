@@ -1,4 +1,9 @@
-import { DndContext, DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  UniqueIdentifier,
+  rectIntersection,
+} from "@dnd-kit/core";
 
 import { Draggable } from "@/dnd-kit/Draggable";
 import { Droppable } from "@/dnd-kit/Droppable";
@@ -7,12 +12,14 @@ import { useState } from "react";
 export default function Tutorial() {
   const containers = ["A", "B", "C"];
   const [parent, setParent] = useState<UniqueIdentifier | null>(null);
-  const [isDropped, setIsDropped] = useState(false);
   const draggableMarkup = <Draggable id={"draggable"}>Drag Me!</Draggable>;
 
   return (
     <div className="h-screen flex justify-center items-center flex-col">
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext
+        collisionDetection={rectIntersection}
+        onDragEnd={handleDragEnd}
+      >
         <div className="flex justify-center items-center">
           {parent === null ? draggableMarkup : null}
         </div>

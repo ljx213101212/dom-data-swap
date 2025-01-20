@@ -11,7 +11,7 @@ export function Droppable(props: PropsWithChildren<DroppableProps>) {
   });
   const style = {
     color: isOver ? "green" : undefined,
-    border: "1px solid green",
+    border: `${isOver ? "3px" : "1px"} solid green`,
   };
 
   return (
