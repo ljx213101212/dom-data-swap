@@ -29,13 +29,20 @@ const Draggable = memo(({ id, rect, scale }: ItemProps) => {
   const [state, setState] = useState<DragState>("idle");
   const [animationClass, setAnimationClass] = useState<string>("");
 
-  const { attributes, listeners, setNodeRef, transform, isDragging, over } =
-    useDraggable({
-      id: id,
-      data: {
-        rect,
-      },
-    });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging,
+    over,
+    node,
+  } = useDraggable({
+    id: id,
+    data: {
+      rect,
+    },
+  });
 
   const [lastOver, setLastOver] = useState<Over | null>(null);
 
@@ -45,28 +52,6 @@ const Draggable = memo(({ id, rect, scale }: ItemProps) => {
       }
     : undefined;
 
-  // useEffect(() => {
-  //   const el = ref.current;
-  //   invariant(el);
-
-  //   return draggable({
-  //     element: el,
-  //     getInitialData: () => ({ type: "item", rect }),
-  //     onDragStart: ({ source, location }) => {
-  //       setState("draggingNoHover");
-  //     },
-  //     onDrop: ({ source, location }) => {
-  //       console.log("onDrop", source, location);
-  //       if (location.current.dropTargets.length === 0) {
-  //         setState("droppingNoSwap");
-  //       } else {
-  //         setState("droppingSwap");
-  //       }
-  //     }, // NEW
-  //     // onGenerateDragPreview: disableNativeDragPreview,
-  //   });
-  // }, [rect]);
-
   useEffect(() => {
     if (over) {
       setLastOver(over);
@@ -74,12 +59,19 @@ const Draggable = memo(({ id, rect, scale }: ItemProps) => {
   }, [over]);
 
   useEffect(() => {
-    if (lastOver) {
-      setState("droppingSwap");
-    } else {
-      setState("droppingNoSwap");
+    if (!isDragging) {
+      //set node z-index to 50
+      (node.current as HTMLElement).style.zIndex = "50";
     }
-  }, [isDragging]);
+
+    if (isDragging && !over) {
+      setState("draggingNoHover");
+    } else if (isDragging && over) {
+      setState("draggingHoverAllowed");
+    } else if (!isDragging && !over) {
+      setState("idle");
+    }
+  }, [isDragging, over]);
 
   useEffect(() => {
     if (!rect) return;
@@ -88,7 +80,7 @@ const Draggable = memo(({ id, rect, scale }: ItemProps) => {
       setAnimationClass("");
     };
     if (rect.shouldShowAnimation) {
-      setAnimationClass("rotate-item-animation");
+      // setAnimationClass("rotate-item-animation");
       (ref.current as unknown as HTMLElement)?.addEventListener(
         "animationend",
         handleAnimationEnd
@@ -121,17 +113,13 @@ const Draggable = memo(({ id, rect, scale }: ItemProps) => {
       {...listeners}
       {...attributes}
     >
-      {rect?.apiData?.userId}
+      <div className="absolute z-50">{rect?.apiData?.userId}</div>
     </div>
   );
 });
 
 export default Draggable;
 
-interface ItemContainerProps {
-  width: number;
-  height: number;
-}
 const getStyle = (
   state: DragState,
   transform: Transform | null,
@@ -154,7 +142,7 @@ const getStyle = (
     return {
       ...baseStyle,
       backgroundColor: "#FDF4BF",
-      opacity: 0,
+      opacity: 0.4,
     };
   } else {
     return {

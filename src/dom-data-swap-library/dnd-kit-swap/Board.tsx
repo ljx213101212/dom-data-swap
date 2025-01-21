@@ -98,7 +98,16 @@ export default function Board() {
     });
   };
 
-  const cancelAnimation = (_event: DragStartEvent) => {
+  const handleOnStart = (event: DragStartEvent) => {
+    console.log("handleOnStart", event.activatorEvent.target);
+    if (event.activatorEvent.target) {
+      //set event.activatorEvent.target zindex 50px
+      (event.activatorEvent.target as HTMLElement).style.zIndex = "9999";
+    }
+    cancelAnimation();
+  };
+
+  const cancelAnimation = () => {
     setRectangles((prevRects) => {
       return prevRects.map((pr) => ({
         ...pr,
@@ -165,7 +174,7 @@ export default function Board() {
                     <DndContext
                       collisionDetection={rectIntersection}
                       onDragEnd={handleDragEnd}
-                      onDragStart={cancelAnimation}
+                      onDragStart={handleOnStart}
                     >
                       {rectangles?.map((rect) => (
                         <Droppable

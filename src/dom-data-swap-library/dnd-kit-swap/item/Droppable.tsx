@@ -65,7 +65,7 @@ const Droppable = memo(
         setAnimationClass("");
       };
       if (rect.shouldShowAnimation) {
-        setAnimationClass("rotate-container-animation");
+        setAnimationClass("shake-top ");
         (ref.current as unknown as HTMLElement)?.addEventListener(
           "animationend",
           handleAnimationEnd
