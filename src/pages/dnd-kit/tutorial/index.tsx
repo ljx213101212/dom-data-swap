@@ -1,9 +1,9 @@
-import Board from "@/pragmatic-swap/Board";
+import Tutorial from "@/dnd-kit/Tutorial";
 
 export default function DndPage() {
   return (
     <>
-      <Board />
+      <Tutorial />
     </>
   );
 }

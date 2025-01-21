@@ -14,6 +14,8 @@
     "@ant-design/pro-components": "^2.8.4",
     "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
     "@atlaskit/pragmatic-drag-and-drop-docs": "^1.2.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.14.0",
     "@umijs/max": "^4.4.4",
     "antd": "^5.23.1",

@@ -3,19 +3,19 @@ import {
   TransformComponent,
   TransformWrapper,
 } from "react-zoom-pan-pinch";
-import useContainerDimensionsOnResize from "@/pragmatic-swap/hook/useContainerDimensionsOnResize";
+import useContainerDimensionsOnResize from "@/dom-data-swap-library/common/hook/useContainerDimensionsOnResize";
 import { useEffect, useRef, useState } from "react";
 import { Layout, Spin } from "antd";
 
-import boardImage from "@/pragmatic-swap/icons/board.svg";
+import boardImage from "@/dom-data-swap-library/common/icons/board.svg";
 import useRandomRectangles, {
   ApiData,
   Rectangle,
-} from "@/pragmatic-swap/hook/useRandomRectangles";
+} from "@/dom-data-swap-library/common/hook/useRandomRectangles";
 import DraggableItem, { DraggableItemData } from "./item/DraggableItem";
 import DraggableItemContainer from "./item/DraggableItemContainer";
-import { calculateInitialTransform } from "./util";
-import ZoomControls from "./zoom/Control";
+import { calculateInitialTransform } from "../common/util";
+import ZoomControls from "../common/zoom/Control";
 import {
   ElementDragPayload,
   monitorForElements,
@@ -65,8 +65,11 @@ export default function Board() {
 
         // 2) Swap in state immutably
         setRectangles((prevRects) => {
-          // Make a shallow copy of the array
-          const newRects = [...prevRects];
+          // Make a shallow copy of the array, reset shouldShowAnimation
+          const newRects = prevRects.map((pr) => ({
+            ...pr,
+            shouldShowAnimation: false,
+          }));
 
           // Find source/destination indexes by ID
           const sourceIndex = newRects.findIndex((r) => r.id === sourceId);
@@ -178,17 +181,6 @@ export default function Board() {
           />
         </Layout.Sider>
       ) : null}
-
-      {/* {containerWidth && containerHeight ? (
-        <ZoomControls
-          className="static"
-          //   zoomIn={transformComponentRef?.current?.zoomIn ?? (() => {})}
-          //   zoomOut={transformComponentRef?.current?.zoomOut ?? (() => {})}
-          //   resetTransform={
-          //     transformComponentRef?.current?.resetTransform ?? (() => {})
-          //   }
-        />
-      ) : null} */}
     </Layout>
   );
 }

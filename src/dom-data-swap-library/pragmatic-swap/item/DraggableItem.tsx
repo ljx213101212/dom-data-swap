@@ -10,8 +10,8 @@ import invariant from "tiny-invariant";
 import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { disableNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/disable-native-drag-preview";
 import { ItemWidth } from "../Board";
-import { ApiData, Rectangle } from "../hook/useRandomRectangles";
-import { DragState } from "../typesRuntime";
+import { ApiData, Rectangle } from "../../common/hook/useRandomRectangles";
+import { DragState } from "../../common/typesRuntime";
 import "./rotation.css";
 
 interface ItemProps {
@@ -58,13 +58,13 @@ const DraggableItem = memo(({ id, rect }: ItemProps) => {
     };
     if (rect.shouldShowAnimation) {
       setAnimationClass("rotate-item-animation");
-      (ref.current as unknown as HTMLElement).addEventListener(
+      (ref.current as unknown as HTMLElement)?.addEventListener(
         "animationend",
         handleAnimationEnd
       );
     }
     return () => {
-      (ref.current as unknown as HTMLElement).removeEventListener(
+      (ref.current as unknown as HTMLElement)?.removeEventListener(
         "animationend",
         handleAnimationEnd
       );
