@@ -7,8 +7,11 @@ import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element
 import { css, jsx } from "@emotion/react";
 import { memo, PropsWithChildren, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
-import { DragStateEnum, type DragState } from "@/pragmatic-swap/typesRuntime";
-import { Rectangle } from "@/pragmatic-swap/hook/useRandomRectangles";
+import {
+  DragStateEnum,
+  type DragState,
+} from "@/dom-data-swap-library/common/typesRuntime";
+import { Rectangle } from "@/dom-data-swap-library/common/hook/useRandomRectangles";
 
 interface DraggableItemContainerProps {
   id: string;

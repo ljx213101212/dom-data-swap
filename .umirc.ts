@@ -22,6 +22,11 @@ export default defineConfig({
       component: "@/pages/dnd-kit/tutorial",
       layout: false,
     },
+    {
+      path: "/dnd-kit/swap",
+      component: "@/pages/dnd-kit/swap",
+      layout: false,
+    },
   ],
   tailwindcss: {},
 });

@@ -1,4 +1,4 @@
-import Board from "@/dom-data-swap-library/pragmatic-swap/Board";
+import Board from "@/dom-data-swap-library/dnd-kit-swap/Board";
 
 export default function DndPage() {
   return (
