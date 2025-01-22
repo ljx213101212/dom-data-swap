@@ -15,3 +15,4 @@ codesandbox.io/p/github/ljx213101212/dom-data-swap
 - [2D collision detection](https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection)
 - [pragmatic-drag-and-drop](https://atlassian.design/components/pragmatic-drag-and-drop/tutorial)
 - [dnd-kit](https://docs.dndkit.com/introduction/getting-started)
+- [animation](https://animista.net/play/attention/shake/shake-top)

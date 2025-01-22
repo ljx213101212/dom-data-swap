@@ -27,7 +27,6 @@ export interface DraggableItemData {
 const Draggable = memo(({ id, rect, scale }: ItemProps) => {
   const ref = useRef(null);
   const [state, setState] = useState<DragState>("idle");
-  const [animationClass, setAnimationClass] = useState<string>("");
 
   const {
     attributes,
@@ -45,12 +44,6 @@ const Draggable = memo(({ id, rect, scale }: ItemProps) => {
   });
 
   const [lastOver, setLastOver] = useState<Over | null>(null);
-
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
 
   useEffect(() => {
     if (over) {
@@ -73,31 +66,10 @@ const Draggable = memo(({ id, rect, scale }: ItemProps) => {
     }
   }, [isDragging, over]);
 
-  useEffect(() => {
-    if (!rect) return;
-    setAnimationClass("");
-    const handleAnimationEnd = () => {
-      setAnimationClass("");
-    };
-    if (rect.shouldShowAnimation) {
-      // setAnimationClass("rotate-item-animation");
-      (ref.current as unknown as HTMLElement)?.addEventListener(
-        "animationend",
-        handleAnimationEnd
-      );
-    }
-    return () => {
-      (ref.current as unknown as HTMLElement)?.removeEventListener(
-        "animationend",
-        handleAnimationEnd
-      );
-    };
-  }, [rect, scale]);
-
   return (
     <div
       id={id}
-      className={`absolute ${animationClass} z-50`} //important
+      className={`absolute z-50`} //important
       // css={imageStyles({ width: ItemWidth - 2, height: ItemWidth - 2 })}
       style={{
         width: ItemWidth - 2,

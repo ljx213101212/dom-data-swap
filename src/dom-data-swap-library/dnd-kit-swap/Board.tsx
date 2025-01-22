@@ -35,7 +35,7 @@ export default function Board() {
   } = calculateInitialTransform(containerWidth, containerHeight);
 
   //随机在生成20个矩形数据
-  const [rectangles, setRectangles] = useRandomRectangles(4, ItemWidth, 1476);
+  const [rectangles, setRectangles] = useRandomRectangles(20, ItemWidth, 1476);
 
   const [pageStatus, setPageStatus] = useState<boolean>(false);
 
