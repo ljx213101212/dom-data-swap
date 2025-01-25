@@ -5,7 +5,7 @@
 
 import { css, jsx } from "@emotion/react";
 import { memo, PropsWithChildren, useEffect, useRef, useState } from "react";
-import { type DragState } from "@/dom-data-swap-library/common/typesRuntime";
+import { DragState } from "@/dom-data-swap-library/common/typesRuntime";
 import { Rectangle } from "@/dom-data-swap-library/common/hook/useRandomRectangles";
 import { useDroppable } from "@dnd-kit/core";
 

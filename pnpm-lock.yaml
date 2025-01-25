@@ -35,6 +35,9 @@ importers:
       antd:
         specifier: ^5.23.1
         version: 5.23.1(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -2174,6 +2177,10 @@ packages:
 
   clone-regexp@2.2.0:
     resolution: {integrity: sha512-beMpP7BOtTipFuW8hrJvREQ2DrRu3BE7by0ZpibtfBA+qfHYvMGTc2Yb1JMYPKg/JUw0CHYvpg796aNTSW9z7Q==}
+    engines: {node: '>=6'}
+
+  clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
 
   color-convert@1.9.3:
@@ -9125,6 +9132,8 @@ snapshots:
   clone-regexp@2.2.0:
     dependencies:
       is-regexp: 2.1.0
+
+  clsx@2.1.1: {}
 
   color-convert@1.9.3:
     dependencies:

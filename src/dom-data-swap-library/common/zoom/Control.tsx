@@ -1,8 +1,5 @@
 import { useEffect } from "react";
-import {
-  useControls,
-  type ReactZoomPanPinchHandlers,
-} from "react-zoom-pan-pinch";
+import type { ReactZoomPanPinchHandlers } from "react-zoom-pan-pinch";
 import { twMerge } from "tailwind-merge";
 
 import CrossHair from "@/dom-data-swap-library/common/icons/CrossHair";

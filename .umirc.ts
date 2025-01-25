@@ -27,6 +27,11 @@ export default defineConfig({
       component: "@/pages/dnd-kit/swap",
       layout: false,
     },
+    {
+      path: "/zoom-pan-pinch/swap",
+      component: "@/pages/zoom-pan-pinch/swap",
+      layout: false,
+    },
   ],
   tailwindcss: {},
 });
