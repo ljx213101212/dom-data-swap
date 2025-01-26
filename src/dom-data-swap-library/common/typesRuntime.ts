@@ -9,3 +9,9 @@ export enum DragStateEnum {
 }
 
 export type DragState = keyof typeof DragStateEnum;
+
+export type DraggableState =
+  | { type: "idle" }
+  | { type: "preview"; container: HTMLElement; rect: DOMRect }
+  | { type: "is-dragging" }
+  | { type: "is-over" };

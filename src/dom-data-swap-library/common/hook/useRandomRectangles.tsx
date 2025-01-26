@@ -71,7 +71,7 @@ const useRandomRectangles = (
 
   return [rectangles, setRectangles] as [
     Rectangle[],
-    Dispatch<SetStateAction<Rectangle[]>>
+    Dispatch<SetStateAction<Rectangle[]>>,
   ];
 };
 

@@ -1,11 +1,15 @@
 export function calculateInitialTransform(
   containerWidth: number,
-  containerHeight: number
+  containerHeight: number,
+  diagramWidth = 1476,
+  diagramHeight = 1476,
+  headerHeight = 56, // Height of the header
+  topPadding = 40 // Top padding
 ) {
-  const diagramWidth = 1476;
-  const diagramHeight = 1476;
-  const headerHeight = 56; // Height of the header
-  const topPadding = 40; // Top padding
+  // const diagramWidth = 1476;
+  // const diagramHeight = 1476;
+  // const headerHeight = 56; // Height of the header
+  // const topPadding = 40; // Top padding
   const availableHeight = containerHeight - headerHeight - topPadding;
 
   const scale = Math.min(
