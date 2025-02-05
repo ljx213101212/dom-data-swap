@@ -68,7 +68,7 @@ const Draggable = ({ id }: ItemProps) => {
           render({ container }) {
             const preview = source.element.cloneNode(true) as HTMLElement;
             //Apply scale to portal
-            //preview.style.transform = `scale(${scale})`;
+            preview.style.transform = `scale(${scale})`;
             container.appendChild(preview);
             setDraggableState({
               type: "preview",
@@ -147,23 +147,23 @@ const Draggable = ({ id }: ItemProps) => {
       >
         {id}
       </div>
-      {draggableState.type === "preview"
+      {/* {draggableState.type === "preview"
         ? createPortal(
             <DragPreview rect={draggableState.rect} />,
             draggableState.container
           )
-        : null}
-      {/* {draggableState.type === "preview"
+        : null} */}
+      {draggableState.type === "preview"
         ? createPortal(
             <div
               className="w-[100px] h-[100px]"
-              style={{
-                transform: `scale(${scale})`,
-              }}
+              // style={{
+              //   transform: `scale(${scale})`,
+              // }}
             />,
             draggableState.container
           )
-        : null} */}
+        : null}
     </div>
   );
 };
