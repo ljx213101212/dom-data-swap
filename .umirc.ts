@@ -32,6 +32,10 @@ export default defineConfig({
       component: "@/pages/zoom-pan-pinch/swap",
       layout: false,
     },
+    {
+      path: "/dnd-kit/drag-overlay",
+      component: "@/pages/dnd-kit/drag-overlay",
+    },
   ],
   tailwindcss: {},
 });
